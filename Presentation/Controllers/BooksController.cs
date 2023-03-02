@@ -1,4 +1,5 @@
-﻿using Entites.Exceptions;
+﻿using Entites.DataTransferObjects;
+using Entites.Exceptions;
 using Entites.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
@@ -47,13 +48,13 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult UpdateOneBook([FromRoute(Name = ("id"))] int id, Book book)
+        public IActionResult UpdateOneBook([FromRoute(Name = ("id"))] int id, BookDtoForUpdate bookDto)
         {
 
-            if (book == null)
+            if (bookDto == null)
                 return NotFound();
 
-            _manager.BookService.Update(id, book, true);
+            _manager.BookService.Update(id, bookDto, true);
             return NoContent();
         }
 
