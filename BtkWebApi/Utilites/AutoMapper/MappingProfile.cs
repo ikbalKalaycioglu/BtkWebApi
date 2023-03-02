@@ -9,6 +9,7 @@ namespace BtkWebApi.Utilites.AutoMapper
         public MappingProfile()
         {
             CreateMap<BookDtoForUpdate, Book>();
+            CreateMap<Book,BookDto>();
         }
     }
 }
