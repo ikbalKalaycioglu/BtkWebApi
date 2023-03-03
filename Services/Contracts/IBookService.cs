@@ -10,10 +10,10 @@ namespace Services.Contracts
 {
     public interface IBookService
     {
-        IEnumerable<BookDto> GetAllBooks(bool trackChanges);
-        Book GetBook(int id, bool trackChanges);
-        Book Create(Book book);
-        void Update(int id, BookDtoForUpdate bookDto, bool trackChanges);
-        void Delete(int id, bool trackChanges);
+        Task<IEnumerable<BookDto>> GetAllBooksAsync(bool trackChanges);
+        Task<BookDto> GetBookByIdAsync(int id, bool trackChanges);
+        Task<BookDto> CreateAsync(BookDtoForInsertion book);
+        Task UpdateAsync(int id, BookDtoForUpdate bookDto, bool trackChanges);
+        Task DeleteAsync(int id, bool trackChanges);
     }
 }
