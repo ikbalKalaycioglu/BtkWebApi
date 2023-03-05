@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Presentation.ActionFilters;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -25,7 +26,21 @@ namespace BtkWebApi.Extensions
 
         public static void ConfigureLoggerSerivce(this IServiceCollection services)
         {
-            services.AddSingleton<ILoggerService,LoggerManager>();
+            services.AddSingleton<ILoggerService, LoggerManager>();
+        }
+
+        public static void ConfigureActionFilters(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddSingleton<LogFilterAttribute>();
+        }
+
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Pagination"));
+            });
         }
     }
 }

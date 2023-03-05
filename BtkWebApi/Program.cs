@@ -1,6 +1,7 @@
 using BtkWebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Presentation.ActionFilters;
 using Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddControllers(config =>
     .AddXmlDataContractSerializerFormatters()
     .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
+
+
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -30,6 +33,8 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureLoggerSerivce();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.ConfigureActionFilters();
+builder.Services.ConfigureCors();
 
 var app = builder.Build();
 
@@ -45,6 +50,8 @@ if (app.Environment.IsDevelopment())
 app.UseHsts();
 
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 

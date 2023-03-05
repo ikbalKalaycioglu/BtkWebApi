@@ -10,7 +10,7 @@ namespace BtkWebApi.Utilites.AutoMapper
         {
             CreateMap<BookDtoForUpdate, Book>();
             CreateMap<Book,BookDto>();
-            CreateMap<Book, BookDtoForInsertion>();
+            CreateMap<Book, BookDtoForInsertion>().ReverseMap();
         }
     }
 }

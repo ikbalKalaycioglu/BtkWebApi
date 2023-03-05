@@ -2,6 +2,7 @@
 using Entites.DataTransferObjects;
 using Entites.Exceptions;
 using Entites.Models;
+using Entites.RequestFeatures;
 using Repositories.Contracts;
 using Services.Contracts;
 using System;
@@ -35,41 +36,39 @@ namespace Services
 
         public async Task DeleteAsync(int id, bool trackChanges)
         {
-            var entity = await _manager.Book.GetOneBookByIdAsync(id, trackChanges);
-            if (entity is null)
-            {
-                throw new BookNotFoundException(id);
-            }
+            var entity = await GetOneBookByIdAndCheckExists(id, trackChanges);
             _manager.Book.DeleteOneBook(entity);
             await _manager.SaveAsync();
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllBooksAsync(bool trackChanges)
+        public async Task<(IEnumerable<BookDto> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters, bool trackChanges)
         {
-            var books = await _manager.Book.GetAllBooksAsync(trackChanges);
-            return _mapper.Map<IEnumerable<BookDto>>(books);
+            var booksWithMetaData = await _manager.Book.GetAllBooksAsync(bookParameters, trackChanges);
+            var booksDto = _mapper.Map<IEnumerable<BookDto>>(booksWithMetaData);
+            return (booksDto, booksWithMetaData.MetaData);
         }
 
         public async Task<BookDto> GetBookByIdAsync(int id, bool trackChanges)
         {
-            var book = await _manager.Book.GetOneBookByIdAsync(id, trackChanges);
-            if (book is null)
-                throw new BookNotFoundException(id);
+            var book = await GetOneBookByIdAndCheckExists(id, trackChanges);
             return _mapper.Map<BookDto>(book);
         }
 
         public async Task UpdateAsync(int id, BookDtoForUpdate bookDto, bool trackChanges)
         {
-            var entity = await _manager.Book.GetOneBookByIdAsync(id, trackChanges);
-
-            if (entity is null)
-                throw new BookNotFoundException(id);
-
+            var entity = await GetOneBookByIdAndCheckExists(id, trackChanges);
             // Mapping
             entity = _mapper.Map<Book>(bookDto);
-
             _manager.Book.UpdateOneBook(entity);
             await _manager.SaveAsync();
+        }
+
+        private async Task<Book> GetOneBookByIdAndCheckExists(int id, bool trackChanges)
+        {
+            var entity = await _manager.Book.GetOneBookByIdAsync(id, trackChanges);
+            if (entity is null)
+                throw new BookNotFoundException(id);
+            return entity;
         }
     }
 }
