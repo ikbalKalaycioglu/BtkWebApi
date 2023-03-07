@@ -2,19 +2,20 @@ using BtkWebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Presentation.ActionFilters;
+using Services;
 using Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(),"/nlog.config"));
+LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
 builder.Services.AddControllers(config =>
 {
     config.RespectBrowserAcceptHeader = true;
     config.ReturnHttpNotAcceptable = true;
 })
-    .AddCustomCsvFormatter()
     .AddXmlDataContractSerializerFormatters()
+    .AddCustomCsvFormatter()
     .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
 
@@ -35,6 +36,9 @@ builder.Services.ConfigureLoggerSerivce();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureActionFilters();
 builder.Services.ConfigureCors();
+builder.Services.ConfigureDataShaper();
+builder.Services.AddCustomMediaTypes();
+builder.Services.AddScoped<IBookLinks, BookLinks>();
 
 var app = builder.Build();
 

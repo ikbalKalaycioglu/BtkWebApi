@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Entites.DataTransferObjects;
 using Entites.Exceptions;
+using Entites.LinkModels;
 using Entites.Models;
 using Entites.RequestFeatures;
 using Repositories.Contracts;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +20,14 @@ namespace Services
         private readonly IRepositoryManager _manager;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly IBookLinks _bookLinks;
 
-        public BookManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper)
+        public BookManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper, IBookLinks bookLinks)
         {
             _manager = manager;
             _logger = logger;
             _mapper = mapper;
+            _bookLinks = bookLinks;
         }
 
         public async Task<BookDto> CreateAsync(BookDtoForInsertion bookDto)
@@ -41,14 +45,16 @@ namespace Services
             await _manager.SaveAsync();
         }
 
-        public async Task<(IEnumerable<BookDto> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters, bool trackChanges)
+        public async Task<(LinkResponse linkResponse, MetaData metaData)>GetAllBooksAsync(LinkParameters linkParameters,bool trackChanges)
         {
-            if(!bookParameters.ValidPriceRange)
+            if (!linkParameters.BookParameters.ValidPriceRange)
                 throw new PriceOutofRangeBadRequestException();
 
-            var booksWithMetaData = await _manager.Book.GetAllBooksAsync(bookParameters, trackChanges);
+            var booksWithMetaData = await _manager.Book.GetAllBooksAsync(linkParameters.BookParameters, trackChanges);
+
             var booksDto = _mapper.Map<IEnumerable<BookDto>>(booksWithMetaData);
-            return (booksDto, booksWithMetaData.MetaData);
+            var links = _bookLinks.TryGenerateLinks(booksDto,linkParameters.BookParameters.Fields,linkParameters.HttpContext);
+            return (linkResponse: links, metaData: booksWithMetaData.MetaData);
         }
 
         public async Task<BookDto> GetBookByIdAsync(int id, bool trackChanges)
