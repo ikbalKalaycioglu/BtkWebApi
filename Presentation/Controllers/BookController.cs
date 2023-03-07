@@ -15,6 +15,7 @@ using System.Xml.Linq;
 
 namespace Presentation.Controllers
 {
+    [ApiVersion("1.0")]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -27,8 +28,9 @@ namespace Presentation.Controllers
             _manager = manager;
         }
 
+        [HttpHead]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
-        [HttpGet]
+        [HttpGet(Name ="GetAllBooksAsync")]
         public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookParameters bookParameters)
         {
             var linkParameters = new LinkParameters()
@@ -49,7 +51,7 @@ namespace Presentation.Controllers
             return Ok(book);
         }
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        [HttpPost]
+        [HttpPost(Name ="CreateOneBookAsync")]
         public async Task<IActionResult> CreateOneBookAsync([FromBody] BookDtoForInsertion bookDto)
         {
             var book = await _manager.BookService.CreateAsync(bookDto);
@@ -72,5 +74,12 @@ namespace Presentation.Controllers
             await _manager.BookService.DeleteAsync(id, false);
             return NoContent();
         }
+        [HttpOptions]
+        public IActionResult GetBooksOptions()
+        {
+            Response.Headers.Add("Allow", "GET, PUT, POST, PATCH, DELETE, HEAD, OPTINOS");
+            return Ok();
+        }
+
     }
 }

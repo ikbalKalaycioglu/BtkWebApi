@@ -2,7 +2,7 @@
 
 namespace BtkWebApi.Extensions
 {
-    public static class IMvcBuilderEextensions
+    public static class IMvcBuilderExtensions
     {
         public static IMvcBuilder AddCustomCsvFormatter(this IMvcBuilder builder)
         {
