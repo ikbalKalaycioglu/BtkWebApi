@@ -15,9 +15,9 @@ using System.Xml.Linq;
 
 namespace Presentation.Controllers
 {
-    [ApiVersion("1.0")]
+    //[ApiVersion("1.0")]
     [ServiceFilter(typeof(LogFilterAttribute))]
-    [Route("api/[controller]")]
+    [Route("api/book")]
     [ApiController]
     public class BookController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace Presentation.Controllers
 
         [HttpHead]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
-        [HttpGet(Name ="GetAllBooksAsync")]
+        [HttpGet(Name = "GetAllBooksAsync")]
         public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookParameters bookParameters)
         {
             var linkParameters = new LinkParameters()
@@ -51,7 +51,7 @@ namespace Presentation.Controllers
             return Ok(book);
         }
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        [HttpPost(Name ="CreateOneBookAsync")]
+        [HttpPost(Name = "CreateOneBookAsync")]
         public async Task<IActionResult> CreateOneBookAsync([FromBody] BookDtoForInsertion bookDto)
         {
             var book = await _manager.BookService.CreateAsync(bookDto);
