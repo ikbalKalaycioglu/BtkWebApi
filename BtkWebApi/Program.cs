@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using BtkWebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
@@ -13,6 +14,7 @@ builder.Services.AddControllers(config =>
 {
     config.RespectBrowserAcceptHeader = true;
     config.ReturnHttpNotAcceptable = true;
+    config.CacheProfiles.Add("5mins", new CacheProfile() { Duration = 300 });
 })
     .AddXmlDataContractSerializerFormatters()
     .AddCustomCsvFormatter()
@@ -40,6 +42,14 @@ builder.Services.ConfigureDataShaper();
 builder.Services.AddCustomMediaTypes();
 builder.Services.AddScoped<IBookLinks, BookLinks>();
 builder.Services.ConfigureVersioning();
+builder.Services.ConfigureResponseCaching();
+builder.Services.ConfigureHttpCacheHeaders();
+builder.Services.AddMemoryCache();
+builder.Services.ConfigureRateLimitingOptions();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 var app = builder.Build();
 
@@ -58,6 +68,12 @@ app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
+app.UseIpRateLimiting();
+
+app.UseResponseCaching();
+app.UseHttpCacheHeaders();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
