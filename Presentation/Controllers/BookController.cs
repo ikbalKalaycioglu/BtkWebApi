@@ -19,9 +19,9 @@ namespace Presentation.Controllers
 {
     //[ApiVersion("1.0")]
     [ServiceFilter(typeof(LogFilterAttribute))]
-    [Route("api/book")]
+    [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "v1")]
+    [ApiExplorerSettings(GroupName ="v1")]
     //[ResponseCache(CacheProfileName = "5mins")]
     //[HttpCacheExpiration(CacheLocation =CacheLocation.Public,MaxAge =80)]
     public class BookController : ControllerBase
@@ -50,6 +50,15 @@ namespace Presentation.Controllers
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
             return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntites) : Ok(result.linkResponse.ShapedEntites);
         }
+        [HttpGet("details")]
+        [Authorize]
+        public async Task<IActionResult> GetAllBooksWithDetailsAsync()
+        {
+            var books =await _manager.BookService.GetAllBooksWithDetailsAsync(false);
+            return Ok(books);
+        }
+
+
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetBookByIdAsync([FromRoute(Name = "id")] int id)

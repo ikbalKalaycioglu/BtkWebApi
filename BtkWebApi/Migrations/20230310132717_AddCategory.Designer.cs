@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.EFCore;
 
@@ -11,9 +12,10 @@ using Repositories.EFCore;
 namespace BtkWebApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230310132717_AddCategory")]
+    partial class AddCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +32,6 @@ namespace BtkWebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -42,29 +41,24 @@ namespace BtkWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Books");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CategoryId = 1,
                             Name = "Karagöz Ve Hacıvat",
                             Price = 75.0
                         },
                         new
                         {
                             Id = 2,
-                            CategoryId = 1,
                             Name = "Mesnevi",
                             Price = 175.0
                         },
                         new
                         {
                             Id = 3,
-                            CategoryId = 2,
                             Name = "Devlet",
                             Price = 375.0
                         });
@@ -210,22 +204,22 @@ namespace BtkWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d026b46f-6984-4052-9c84-f5dd01ee855f",
-                            ConcurrencyStamp = "12d25358-1f71-498b-8adb-48d830a4a4d2",
+                            Id = "d8ec6837-56bd-428e-8df0-8868316cacb0",
+                            ConcurrencyStamp = "7b5559a4-5689-4a2d-aa98-368a6c88732b",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "9b77bd75-7506-49ba-a12c-e30250d67cbb",
-                            ConcurrencyStamp = "8983dde5-766b-4891-9325-4a1e83a77414",
+                            Id = "f1b3b47e-c804-40fc-99ce-69db8272d4f9",
+                            ConcurrencyStamp = "1aef70b7-f6d0-4bac-846e-d3e7ab88f8cd",
                             Name = "Editor",
                             NormalizedName = "EDITOR"
                         },
                         new
                         {
-                            Id = "a7afc865-c118-4a05-9d58-422b7d8053c6",
-                            ConcurrencyStamp = "c6221402-998c-48b2-a369-529e3e4c4af1",
+                            Id = "eac4bf8d-f4db-4acb-a467-0d20bde9964d",
+                            ConcurrencyStamp = "71b1351e-f264-43c4-9846-bdd414d55da0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -337,17 +331,6 @@ namespace BtkWebApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entites.Models.Book", b =>
-                {
-                    b.HasOne("Entites.Models.Category", "Category")
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -397,11 +380,6 @@ namespace BtkWebApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Entites.Models.Category", b =>
-                {
-                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

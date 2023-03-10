@@ -178,7 +178,19 @@ namespace BtkWebApi.Extensions
                         Email = "ikbal.kalay@gmail.com",
                     }
                 });
-                s.SwaggerDoc("v2", new OpenApiInfo { Title = "BTK Akademi", Version = "v2" });
+
+                s.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Title = "BTK Akademi",
+                    Version = "v2",
+                    Description = "BTK Akademi ASP.NET Core Web API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "İkbal KALAYCIOĞLU",
+                        Email = "ikbal.kalay@gmail.com",
+                    }
+                });
+
 
                 s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
@@ -208,6 +220,18 @@ namespace BtkWebApi.Extensions
             });
         }
 
+        public static void RegisterRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+        }
+
+        public static void RegisterServices(this IServiceCollection services)
+        {
+            services.AddScoped<IBookService, BookManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddScoped<IAuthenticationService, AuthenticationManager>();
+        }
 
     }
 }

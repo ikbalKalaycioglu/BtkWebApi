@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
     //[ApiVersion("1.1", Deprecated = true)]
-    [Route("api/book")]
+    [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName ="v2")]
+    [ApiExplorerSettings(GroupName = "v2")]
     public class BookV2Controller : ControllerBase
     {
         private readonly IServiceManager _manager;

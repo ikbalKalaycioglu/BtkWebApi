@@ -58,6 +58,10 @@ namespace Services
             var result = await _userManager.CreateAsync(user, userForRegistirationDto.Password);
             if (result.Succeeded)
             {
+                if(userForRegistirationDto.Roles is null)
+                {
+
+                }
                 await _userManager.AddToRolesAsync(user, userForRegistirationDto.Roles);
             }
             return result;
